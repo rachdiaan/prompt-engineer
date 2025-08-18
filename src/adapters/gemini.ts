@@ -1,0 +1,21 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { PEG_SYSTEM_PROMPT } from "../types/peg";
+
+export async function runGemini(userMessage: string, model = "gemini-1.5-pro") {
+  const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY!);
+  
+  const gem = genAI.getGenerativeModel({
+    model,
+    systemInstruction: { 
+      role: "system", 
+      parts: [{ text: PEG_SYSTEM_PROMPT }] 
+    }
+  });
+  
+  const res = await gem.generateContent({
+    contents: [{ role: "user", parts: [{ text: userMessage }] }],
+    generationConfig: { temperature: 0.2 }
+  });
+  
+  return res.response.text();
+}
