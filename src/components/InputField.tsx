@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 interface InputFieldProps {
   label: string;
@@ -17,29 +17,34 @@ export const InputField: React.FC<InputFieldProps> = ({
   type = 'text',
   required = false
 }) => {
-  const inputClasses = "w-full px-4 py-3 border border-gray-600/50 rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300 bg-gray-800/50 focus:bg-gray-700/50 text-gray-100 placeholder-gray-400 backdrop-blur-sm hover:border-gray-500/50";
+  const id = useId();
+  const inputClasses = "w-full px-4 py-3 sm:px-5 sm:py-4 glass-input rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300 text-gray-100 placeholder-gray-400 hover:border-gray-500/50 resize-none focus-ring";
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-gray-200">
+      <label htmlFor={id} className="block text-responsive-sm font-medium text-gray-200">
         {label}
         {required && <span className="text-pink-400 ml-1">*</span>}
       </label>
       {type === 'textarea' ? (
         <textarea
+          id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           rows={3}
           className={inputClasses}
+          required={required}
         />
       ) : (
         <input
+          id={id}
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           className={inputClasses}
+          required={required}
         />
       )}
     </div>

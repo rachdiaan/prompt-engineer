@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { PegSchema, buildNaturalLanguagePrompt, validatePeg } from '../types/peg';
 
+// Optimized initial schema with better defaults
 const initialSchema: PegSchema = {
   role: '',
   context: {
@@ -33,6 +34,7 @@ const initialSchema: PegSchema = {
   }
 };
 
+// Optimized hook with better performance
 export const usePromptForm = () => {
   const [schema, setSchema] = useState<PegSchema>(initialSchema);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -46,6 +48,7 @@ export const usePromptForm = () => {
     meta: false
   });
 
+  // Memoized callbacks for better performance
   const toggleSection = useCallback((section: string) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -53,6 +56,7 @@ export const usePromptForm = () => {
     }));
   }, []);
 
+  // Optimized update functions with proper typing
   const updateSchema = useCallback(<K extends keyof PegSchema>(
     key: K,
     value: PegSchema[K]
@@ -63,6 +67,7 @@ export const usePromptForm = () => {
     }));
   }, []);
 
+  // Optimized nested update with better performance
   const updateNestedSchema = useCallback(<
     K extends keyof PegSchema,
     N extends keyof PegSchema[K]
@@ -80,6 +85,7 @@ export const usePromptForm = () => {
     }));
   }, []);
 
+  // Memoized computed values for better performance
   const generatedPrompt = useMemo(() => {
     const validation = validatePeg(schema);
     if (!validation.ok) return '';
@@ -91,8 +97,19 @@ export const usePromptForm = () => {
     return validatePeg(schema).ok;
   }, [schema]);
 
+  // Optimized reset function
   const resetForm = useCallback(() => {
     setSchema(initialSchema);
+    setExpandedSections({
+      role: true,
+      context: true,
+      objective: true,
+      instructions: true,
+      output: false,
+      style: false,
+      constraints: false,
+      meta: false
+    });
   }, []);
 
   return {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Header } from './components/Header';
 import { FormSection } from './components/FormSection';
 import { InputField } from './components/InputField';
@@ -17,7 +17,8 @@ import {
   Settings,
   Brain,
   RefreshCw,
-  Sparkles
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react';
 
 function App() {
@@ -34,86 +35,85 @@ function App() {
 
   const [aiType, setAiType] = useState<'chatgpt' | 'gemini'>('chatgpt');
 
-  const toneOptions = [
-    { value: '', label: 'Pilih Tone...' },
-    { value: 'formal', label: 'Formal' },
-    { value: 'informal', label: 'Informal' },
-    { value: 'professional', label: 'Professional' },
-    { value: 'friendly', label: 'Friendly' },
-    { value: 'authoritative', label: 'Authoritative' },
-    { value: 'conversational', label: 'Conversational' }
-  ];
-
-  const voiceOptions = [
-    { value: '', label: 'Pilih Voice...' },
-    { value: 'expert', label: 'Expert' },
-    { value: 'teacher', label: 'Teacher' },
-    { value: 'consultant', label: 'Consultant' },
-    { value: 'assistant', label: 'Assistant' },
-    { value: 'mentor', label: 'Mentor' },
-    { value: 'analyst', label: 'Analyst' }
-  ];
-
-  const outputTypeOptions = [
-    { value: '', label: 'Pilih Format...' },
-    { value: 'paragraph', label: 'Paragraph' },
-    { value: 'list', label: 'List' },
-    { value: 'table', label: 'Table' },
-    { value: 'json', label: 'JSON' },
-    { value: 'markdown', label: 'Markdown' },
-    { value: 'code', label: 'Code' }
-  ];
-
-  const lengthOptions = [
-    { value: '', label: 'Pilih Panjang...' },
-    { value: 'brief', label: 'Brief (1-2 paragraf)' },
-    { value: 'medium', label: 'Medium (3-5 paragraf)' },
-    { value: 'detailed', label: 'Detailed (6+ paragraf)' },
-    { value: 'comprehensive', label: 'Comprehensive' }
-  ];
-
-  const reasoningDepthOptions = [
-    { value: 'brief', label: 'Brief' },
-    { value: 'standard', label: 'Standard' },
-    { value: 'deep', label: 'Deep' }
-  ];
-
-  const citationStyleOptions = [
-    { value: '', label: 'Tidak ada' },
-    { value: 'apa', label: 'APA' },
-    { value: 'mla', label: 'MLA' },
-    { value: 'chicago', label: 'Chicago' },
-    { value: 'ieee', label: 'IEEE' }
-  ];
+  const selectOptions = useMemo(() => ({
+    tone: [
+      { value: '', label: 'Pilih Tone...' },
+      { value: 'formal', label: 'Formal' },
+      { value: 'informal', label: 'Informal' },
+      { value: 'professional', label: 'Professional' },
+      { value: 'friendly', label: 'Friendly' },
+      { value: 'authoritative', label: 'Authoritative' },
+      { value: 'conversational', label: 'Conversational' }
+    ],
+    voice: [
+      { value: '', label: 'Pilih Voice...' },
+      { value: 'expert', label: 'Expert' },
+      { value: 'teacher', label: 'Teacher' },
+      { value: 'consultant', label: 'Consultant' },
+      { value: 'assistant', label: 'Assistant' },
+      { value: 'mentor', label: 'Mentor' },
+      { value: 'analyst', label: 'Analyst' }
+    ],
+    outputType: [
+      { value: '', label: 'Pilih Format...' },
+      { value: 'paragraph', label: 'Paragraph' },
+      { value: 'list', label: 'List' },
+      { value: 'table', label: 'Table' },
+      { value: 'json', label: 'JSON' },
+      { value: 'markdown', label: 'Markdown' },
+      { value: 'code', label: 'Code' }
+    ],
+    length: [
+      { value: '', label: 'Pilih Panjang...' },
+      { value: 'brief', label: 'Brief (1-2 paragraf)' },
+      { value: 'medium', label: 'Medium (3-5 paragraf)' },
+      { value: 'detailed', label: 'Detailed (6+ paragraf)' },
+      { value: 'comprehensive', label: 'Comprehensive' }
+    ],
+    reasoningDepth: [
+      { value: 'brief', label: 'Brief' },
+      { value: 'standard', label: 'Standard' },
+      { value: 'deep', label: 'Deep' }
+    ],
+    citationStyle: [
+      { value: '', label: 'Tidak ada' },
+      { value: 'apa', label: 'APA' },
+      { value: 'mla', label: 'MLA' },
+      { value: 'chicago', label: 'Chicago' },
+      { value: 'ieee', label: 'IEEE' }
+    ]
+  }), []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
+    <div className="min-h-screen bg-gray-900 gradient-mesh">
       {/* Animated background elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-3/4 left-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-pink-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-3/4 left-1/2 w-64 h-64 sm:w-96 sm:h-96 bg-blue-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
       </div>
 
       <Header />
       
-      <div className="relative container mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="relative container mx-auto px-responsive py-responsive">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-responsive">
           {/* Form Section */}
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center space-x-3">
-                <Sparkles className="w-6 h-6 text-purple-400" />
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <div className="p-2 glass-card rounded-lg">
+                  <Sparkles className="w-6 h-6 text-purple-400" />
+                </div>
+                <h2 className="text-responsive-xl font-bold text-gradient">
                   Buat Prompt
                 </h2>
               </div>
               <button
                 onClick={resetForm}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-400 hover:text-gray-200 hover:bg-gray-800/50 rounded-xl transition-all duration-300 border border-gray-700/30 hover:border-gray-600/50 hover:scale-105"
+                className="flex items-center space-x-2 px-4 py-3 sm:px-5 sm:py-4 text-gray-400 hover:text-gray-200 glass-card hover:glass-button rounded-xl transition-all duration-300 interactive focus-ring"
               >
                 <RefreshCw className="w-4 h-4" />
-                <span className="text-sm font-medium">Reset</span>
+                <span className="text-responsive-sm font-medium">Reset</span>
               </button>
             </div>
 
@@ -140,7 +140,7 @@ function App() {
               isExpanded={expandedSections.context}
               onToggle={() => toggleSection('context')}
             >
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:gap-6">
                 <InputField
                   label="User/Pengguna"
                   value={schema.context.user}
@@ -206,19 +206,19 @@ function App() {
               isExpanded={expandedSections.output}
               onToggle={() => toggleSection('output')}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
                 <SelectField
                   label="Tipe Output"
                   value={schema.output.type}
                   onChange={(value) => updateNestedSchema('output', 'type', value)}
-                  options={outputTypeOptions}
+                  options={selectOptions.outputType}
                   required
                 />
                 <SelectField
                   label="Panjang Output"
                   value={schema.output.length}
                   onChange={(value) => updateNestedSchema('output', 'length', value)}
-                  options={lengthOptions}
+                  options={selectOptions.length}
                   required
                 />
               </div>
@@ -237,19 +237,19 @@ function App() {
               isExpanded={expandedSections.style}
               onToggle={() => toggleSection('style')}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <SelectField
                   label="Tone/Nada"
                   value={schema.style.tone}
                   onChange={(value) => updateNestedSchema('style', 'tone', value)}
-                  options={toneOptions}
+                  options={selectOptions.tone}
                   required
                 />
                 <SelectField
                   label="Voice/Suara"
                   value={schema.style.voice}
                   onChange={(value) => updateNestedSchema('style', 'voice', value)}
-                  options={voiceOptions}
+                  options={selectOptions.voice}
                   required
                 />
               </div>
@@ -262,8 +262,8 @@ function App() {
               isExpanded={expandedSections.constraints}
               onToggle={() => toggleSection('constraints')}
             >
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   <CheckboxField
                     label="Hindari Pengulangan"
                     checked={schema.constraints.no_repetition}
@@ -277,12 +277,12 @@ function App() {
                     description="Gunakan hanya informasi terkini"
                   />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   <SelectField
                     label="Gaya Sitasi"
                     value={schema.constraints.citation_style || ''}
                     onChange={(value) => updateNestedSchema('constraints', 'citation_style', value || null)}
-                    options={citationStyleOptions}
+                    options={selectOptions.citationStyle}
                   />
                   <InputField
                     label="Timeframe"
@@ -301,14 +301,14 @@ function App() {
               isExpanded={expandedSections.meta}
               onToggle={() => toggleSection('meta')}
             >
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <SelectField
                   label="Kedalaman Reasoning"
                   value={schema.meta.reasoning_depth}
                   onChange={(value) => updateNestedSchema('meta', 'reasoning_depth', value as any)}
-                  options={reasoningDepthOptions}
+                  options={selectOptions.reasoningDepth}
                 />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   <CheckboxField
                     label="Tampilkan Proses Kerja"
                     checked={schema.meta.show_work}
@@ -333,7 +333,7 @@ function App() {
           </div>
 
           {/* Preview Section */}
-          <div className="lg:sticky lg:top-8 lg:self-start space-y-6">
+          <div className="xl:sticky xl:top-8 xl:self-start space-y-6">
             <PromptPreview
               prompt={generatedPrompt}
               aiType={aiType}
@@ -346,9 +346,9 @@ function App() {
             />
             
             {!isValid && (
-              <div className="p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border border-yellow-500/30 rounded-xl backdrop-blur-sm">
-                <p className="text-yellow-200 text-sm flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4" />
+              <div className="p-4 sm:p-5 glass-card border border-yellow-500/30 rounded-xl">
+                <p className="text-yellow-200 text-responsive-sm flex items-center space-x-3 leading-relaxed">
+                  <AlertTriangle className="w-5 h-5 flex-shrink-0" />
                   <span>⚠️ Lengkapi form untuk generate prompt yang valid</span>
                 </p>
               </div>
