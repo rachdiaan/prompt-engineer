@@ -118,11 +118,11 @@ export const Documentation: React.FC = () => {
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                        <strong>OpenAI API Key:</strong> Dapatkan di <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">platform.openai.com</a>
+                        <strong>OpenAI API Key:</strong> Dapatkan di <a href="https://platform.openai.com/api-keys" target=\"_blank" rel="noopener noreferrer\" className="text-blue-400 hover:underline">platform.openai.com</a>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-                        <strong>Gemini API Key:</strong> Dapatkan di <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Google AI Studio</a>
+                        <strong>Gemini API Key:</strong> Dapatkan di <a href="https://makersuite.google.com/app/apikey" target=\"_blank" rel="noopener noreferrer\" className="text-blue-400 hover:underline">Google AI Studio</a>
                       </div>
                     </div>
                   </div>
