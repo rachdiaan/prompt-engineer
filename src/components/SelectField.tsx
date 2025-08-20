@@ -29,7 +29,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full px-4 py-3 sm:px-5 sm:py-4 glass-input rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300 text-gray-100 hover:border-gray-500/50 appearance-none cursor-pointer focus-ring"
+          className="w-full px-4 py-3 glass-input rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-200 text-gray-100 hover:border-gray-500/50 appearance-none cursor-pointer focus-ring"
           required={required}
         >
           {options.map((option) => (

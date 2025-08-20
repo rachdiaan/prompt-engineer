@@ -7,6 +7,9 @@ import { CheckboxField } from './components/CheckboxField';
 import { ArrayField } from './components/ArrayField';
 import { PromptPreview } from './components/PromptPreview';
 import { AITestPanel } from './components/AITestPanel';
+import { FloatingNav } from './components/FloatingNav';
+import { Footer } from './components/Footer';
+import { Documentation } from './components/Documentation';
 import { usePromptForm } from './hooks/usePromptForm';
 import {
   User,
@@ -34,6 +37,7 @@ function App() {
   } = usePromptForm();
 
   const [aiType, setAiType] = useState<'chatgpt' | 'gemini'>('chatgpt');
+  const [currentPage, setCurrentPage] = useState<'home' | 'docs'>('home');
 
   const selectOptions = useMemo(() => ({
     tone: [
@@ -84,18 +88,26 @@ function App() {
     ]
   }), []);
 
+  if (currentPage === 'docs') {
+    return (
+      <>
+        <Documentation />
+        <FloatingNav currentPage={currentPage} onNavigate={setCurrentPage} />
+      </>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-900 gradient-mesh">
-      {/* Animated background elements */}
+    <div className="min-h-screen bg-gray-900">
+      {/* Subtle Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500/5 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-pink-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-3/4 left-1/2 w-64 h-64 sm:w-96 sm:h-96 bg-blue-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl animate-subtle-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl animate-subtle-float" style={{ animationDelay: '4s' }}></div>
       </div>
 
       <Header />
       
-      <div className="relative container mx-auto px-responsive py-responsive">
+      <div className="relative container-responsive py-8">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-responsive">
           {/* Form Section */}
           <div className="space-y-6">
@@ -110,7 +122,7 @@ function App() {
               </div>
               <button
                 onClick={resetForm}
-                className="flex items-center space-x-2 px-4 py-3 sm:px-5 sm:py-4 text-gray-400 hover:text-gray-200 glass-card hover:glass-button rounded-xl transition-all duration-300 interactive focus-ring"
+                className="flex items-center space-x-2 px-4 py-3 text-gray-400 hover:text-gray-200 glass-card hover:glass-button rounded-xl transition-all duration-200 interactive focus-ring"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span className="text-responsive-sm font-medium">Reset</span>
@@ -140,7 +152,7 @@ function App() {
               isExpanded={expandedSections.context}
               onToggle={() => toggleSection('context')}
             >
-              <div className="grid grid-cols-1 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 gap-4">
                 <InputField
                   label="User/Pengguna"
                   value={schema.context.user}
@@ -206,7 +218,7 @@ function App() {
               isExpanded={expandedSections.output}
               onToggle={() => toggleSection('output')}
             >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
                 <SelectField
                   label="Tipe Output"
                   value={schema.output.type}
@@ -237,7 +249,7 @@ function App() {
               isExpanded={expandedSections.style}
               onToggle={() => toggleSection('style')}
             >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <SelectField
                   label="Tone/Nada"
                   value={schema.style.tone}
@@ -263,7 +275,7 @@ function App() {
               onToggle={() => toggleSection('constraints')}
             >
               <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <CheckboxField
                     label="Hindari Pengulangan"
                     checked={schema.constraints.no_repetition}
@@ -277,7 +289,7 @@ function App() {
                     description="Gunakan hanya informasi terkini"
                   />
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <SelectField
                     label="Gaya Sitasi"
                     value={schema.constraints.citation_style || ''}
@@ -308,7 +320,7 @@ function App() {
                   onChange={(value) => updateNestedSchema('meta', 'reasoning_depth', value as any)}
                   options={selectOptions.reasoningDepth}
                 />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <CheckboxField
                     label="Tampilkan Proses Kerja"
                     checked={schema.meta.show_work}
@@ -346,7 +358,7 @@ function App() {
             />
             
             {!isValid && (
-              <div className="p-4 sm:p-5 glass-card border border-yellow-500/30 rounded-xl">
+              <div className="p-4 glass-card border border-yellow-500/30 rounded-xl">
                 <p className="text-yellow-200 text-responsive-sm flex items-center space-x-3 leading-relaxed">
                   <AlertTriangle className="w-5 h-5 flex-shrink-0" />
                   <span>⚠️ Lengkapi form untuk generate prompt yang valid</span>
@@ -356,6 +368,9 @@ function App() {
           </div>
         </div>
       </div>
+
+      <Footer />
+      <FloatingNav currentPage={currentPage} onNavigate={setCurrentPage} />
     </div>
   );
 }

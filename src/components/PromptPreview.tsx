@@ -52,8 +52,8 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
   }, [prompt, viewMode, aiType]);
 
   return (
-    <div className="glass-ultra rounded-2xl shadow-depth overflow-hidden shadow-glow animate-shimmer">
-      <div className="px-responsive py-4 sm:py-5 bg-gradient-to-r from-gray-800/30 to-gray-700/30 border-b border-white/5">
+    <div className="glass-ultra rounded-2xl shadow-lg overflow-hidden animate-fade-in">
+      <div className="px-responsive py-4 bg-gradient-to-r from-gray-800/30 to-gray-700/30 border-b border-white/5">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 glass-card rounded-lg">
@@ -67,9 +67,9 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
             <div className="flex glass-card rounded-lg p-1 border border-white/5 w-full sm:w-auto">
               <button
                 onClick={() => setViewMode('natural')}
-                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-300 flex items-center space-x-2 flex-1 sm:flex-none justify-center ${
+                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-200 flex items-center space-x-2 flex-1 sm:flex-none justify-center ${
                   viewMode === 'natural'
-                    ? 'glass-button text-white shadow-glow'
+                    ? 'glass-button text-white'
                     : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
@@ -78,9 +78,9 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
               </button>
               <button
                 onClick={() => setViewMode('compact')}
-                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-300 flex items-center space-x-2 flex-1 sm:flex-none justify-center ${
+                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-200 flex items-center space-x-2 flex-1 sm:flex-none justify-center ${
                   viewMode === 'compact'
-                    ? 'glass-button text-white shadow-glow'
+                    ? 'glass-button text-white'
                     : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
@@ -93,9 +93,9 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
             <div className="flex glass-card rounded-lg p-1 border border-white/5 w-full sm:w-auto">
               <button
                 onClick={() => onAiTypeChange('chatgpt')}
-                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-300 flex-1 sm:flex-none ${
+                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-200 flex-1 sm:flex-none ${
                   aiType === 'chatgpt'
-                    ? 'bg-gradient-to-r from-green-600/80 to-emerald-600/80 text-white shadow-glow'
+                    ? 'bg-gradient-to-r from-green-600/80 to-emerald-600/80 text-white'
                     : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
@@ -103,9 +103,9 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
               </button>
               <button
                 onClick={() => onAiTypeChange('gemini')}
-                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-300 flex-1 sm:flex-none ${
+                className={`px-3 py-2 rounded-md text-responsive-xs font-medium transition-all duration-200 flex-1 sm:flex-none ${
                   aiType === 'gemini'
-                    ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white shadow-glow'
+                    ? 'bg-gradient-to-r from-blue-600/80 to-cyan-600/80 text-white'
                     : 'text-gray-400 hover:text-gray-200'
                 }`}
               >
@@ -117,7 +117,7 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
       </div>
       
       <div className="p-responsive">
-        <div className="glass-input rounded-xl p-4 sm:p-5 mb-6 max-h-64 sm:max-h-96 overflow-y-auto border border-white/5">
+        <div className="glass-input rounded-xl p-4 mb-6 max-h-64 overflow-y-auto border border-white/5">
           <pre className="text-responsive-xs text-gray-200 whitespace-pre-wrap font-mono leading-relaxed">
             {viewMode === 'natural' 
               ? (prompt || 'Prompt akan muncul di sini setelah form diisi...') 
@@ -138,12 +138,12 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
           <button
             onClick={handleCopy}
             disabled={viewMode === 'natural' && !prompt}
-            className={`flex items-center justify-center space-x-2 px-4 py-3 sm:px-5 sm:py-4 rounded-xl font-medium transition-all duration-300 flex-1 sm:flex-none focus-ring ${
+            className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 flex-1 sm:flex-none focus-ring ${
               (viewMode === 'natural' && !prompt)
                 ? 'glass-input text-gray-500 cursor-not-allowed'
                 : copied
-                ? 'bg-gradient-to-r from-green-600/80 to-emerald-600/80 text-white shadow-glow border border-green-500/30'
-                : 'glass-button text-white shadow-glow interactive'
+                ? 'bg-gradient-to-r from-green-600/80 to-emerald-600/80 text-white border border-green-500/30'
+                : 'glass-button text-white interactive'
             }`}
           >
             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -153,10 +153,10 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
           <button
             onClick={handleDownload}
             disabled={viewMode === 'natural' && !prompt}
-            className={`flex items-center justify-center space-x-2 px-4 py-3 sm:px-5 sm:py-4 rounded-xl font-medium transition-all duration-300 flex-1 sm:flex-none focus-ring ${
+            className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 flex-1 sm:flex-none focus-ring ${
               (viewMode === 'natural' && !prompt)
                 ? 'glass-input text-gray-500 cursor-not-allowed'
-                : 'bg-gradient-to-r from-indigo-600/80 to-purple-600/80 text-white hover:from-indigo-500/80 hover:to-purple-500/80 shadow-glow border border-indigo-500/30 interactive'
+                : 'bg-gradient-to-r from-indigo-600/80 to-purple-600/80 text-white hover:from-indigo-500/80 hover:to-purple-500/80 border border-indigo-500/30 interactive'
             }`}
           >
             <Download className="w-4 h-4" />
@@ -166,10 +166,10 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
           <button
             onClick={openInAI}
             disabled={viewMode === 'natural' && !prompt}
-            className={`flex items-center justify-center space-x-2 px-4 py-3 sm:px-5 sm:py-4 rounded-xl font-medium transition-all duration-300 flex-1 sm:flex-none focus-ring ${
+            className={`flex items-center justify-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 flex-1 sm:flex-none focus-ring ${
               (viewMode === 'natural' && !prompt)
                 ? 'glass-input text-gray-500 cursor-not-allowed'
-                : 'bg-gradient-to-r from-pink-600/80 to-purple-600/80 text-white hover:from-pink-500/80 hover:to-purple-500/80 shadow-glow-pink border border-pink-500/30 interactive'
+                : 'bg-gradient-to-r from-pink-600/80 to-purple-600/80 text-white hover:from-pink-500/80 hover:to-purple-500/80 border border-pink-500/30 interactive'
             }`}
           >
             <ExternalLink className="w-4 h-4" />

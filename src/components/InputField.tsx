@@ -18,7 +18,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   required = false
 }) => {
   const id = useId();
-  const inputClasses = "w-full px-4 py-3 sm:px-5 sm:py-4 glass-input rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-300 text-gray-100 placeholder-gray-400 hover:border-gray-500/50 resize-none focus-ring";
+  const inputClasses = "w-full px-4 py-3 glass-input rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-400/50 transition-all duration-200 text-gray-100 placeholder-gray-400 hover:border-gray-500/50 resize-none focus-ring";
 
   return (
     <div className="space-y-3">

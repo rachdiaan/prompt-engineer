@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { PEG_SYSTEM_PROMPT } from "../types/peg";
 
-export async function runOpenAI(userMessage: string, model = "gpt-4") {
+export async function runOpenAI(userMessage: string, model = "gpt-4", maxTokens = 1000, temperature = 0.7) {
   const client = new OpenAI({ 
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
     dangerouslyAllowBrowser: true
@@ -13,7 +13,8 @@ export async function runOpenAI(userMessage: string, model = "gpt-4") {
       { role: "system", content: PEG_SYSTEM_PROMPT },
       { role: "user", content: userMessage }
     ],
-    temperature: 0.2
+    temperature,
+    max_tokens: maxTokens
   });
   
   return res.choices[0]?.message?.content ?? "";
