@@ -16,6 +16,7 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
   const [testMessage, setTestMessage] = useState('Buatkan artikel tentang AI dan masa depan teknologi');
   const [maxTokens, setMaxTokens] = useState<number>(1000);
   const [temperature, setTemperature] = useState<number>(0.7);
+  const [model, setModel] = useState<string>('');
 
   const handleTest = useCallback(async () => {
     if (!prompt.trim()) {
@@ -30,10 +31,12 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
     try {
       let response: string;
       
+      const selectedModel = model || (aiType === 'chatgpt' ? 'gpt-4' : 'gemini-1.5-pro');
+      
       if (aiType === 'chatgpt') {
-        response = await runOpenAI(testMessage, 'gpt-4', maxTokens, temperature);
+        response = await runOpenAI(testMessage, selectedModel, maxTokens, temperature);
       } else {
-        response = await runGemini(testMessage, 'gemini-1.5-pro', maxTokens, temperature);
+        response = await runGemini(testMessage, selectedModel, maxTokens, temperature);
       }
       
       setResult(response);
@@ -49,7 +52,7 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [prompt, testMessage, aiType, maxTokens, temperature]);
+  }, [prompt, testMessage, aiType, maxTokens, temperature, model]);
 
   const hasApiKey = useCallback(() => {
     if (aiType === 'chatgpt') {
@@ -112,6 +115,31 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
                   className="w-full px-3 py-2 glass-input rounded-lg text-sm focus-ring"
                 />
               </div>
+            </div>
+
+            {/* Model Selection */}
+            <div className="mb-4">
+              <label className="block text-xs font-medium mb-2">Model</label>
+              <select
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                className="w-full px-3 py-2 glass-input rounded-lg text-sm focus-ring"
+              >
+                {aiType === 'chatgpt' ? (
+                  <>
+                    <option value="">Default (GPT-4)</option>
+                    <option value="gpt-4">GPT-4</option>
+                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="">Default (Gemini-1.5-pro)</option>
+                    <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                    <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                  </>
+                )}
+              </select>
             </div>
 
             <div className="space-y-2 text-xs glass-input p-3 rounded-lg border border-yellow-600/30">
