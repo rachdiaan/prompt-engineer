@@ -50,15 +50,15 @@ export const Header: React.FC = () => {
             {/* Feature Pills */}
             <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl">
               {[
-                { icon: Bot, text: 'AI Powered', color: 'purple' },
-                { icon: Sparkles, text: 'Smart Templates', color: 'pink' },
-                { icon: Code2, text: 'Export Ready', color: 'cyan' }
+                { icon: Bot, text: 'AI Powered' },
+                { icon: Sparkles, text: 'Smart Templates' },
+                { icon: Code2, text: 'Export Ready' }
               ].map((feature, index) => (
                 <div
                   key={index}
                   className="flex items-center space-x-2 px-3 py-2 glass-card rounded-full text-responsive-xs font-medium interactive"
                 >
-                  <feature.icon className={`w-3 h-3 text-${feature.color}-400`} />
+                  <feature.icon className="w-3 h-3 text-purple-400" />
                   <span className="text-gray-300">{feature.text}</span>
                 </div>
               ))}

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Play, Loader2, AlertCircle, CheckCircle, Settings, Zap, Eye, EyeOff } from 'lucide-react';
+import { Play, Loader2, AlertCircle, CheckCircle, Settings, Zap, Eye, EyeOff, Key, Lock } from 'lucide-react';
 import { runOpenAI } from '../adapters/openai';
 import { runGemini } from '../adapters/gemini';
 
@@ -17,10 +17,26 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
   const [maxTokens, setMaxTokens] = useState<number>(1000);
   const [temperature, setTemperature] = useState<number>(0.7);
   const [model, setModel] = useState<string>('');
+  
+  // Manual API Keys State
+  const [openaiApiKey, setOpenaiApiKey] = useState<string>('');
+  const [geminiApiKey, setGeminiApiKey] = useState<string>('');
+  const [showApiKeys, setShowApiKeys] = useState(false);
 
   const handleTest = useCallback(async () => {
     if (!prompt.trim()) {
       setError('Prompt tidak boleh kosong');
+      return;
+    }
+
+    // Check for API keys
+    const currentApiKey = aiType === 'chatgpt' ? openaiApiKey : geminiApiKey;
+    const envApiKey = aiType === 'chatgpt' 
+      ? import.meta.env.VITE_OPENAI_API_KEY 
+      : import.meta.env.VITE_GEMINI_API_KEY;
+
+    if (!currentApiKey && !envApiKey) {
+      setError(`API Key ${aiType === 'chatgpt' ? 'OpenAI' : 'Gemini'} diperlukan. Masukkan di pengaturan API.`);
       return;
     }
 
@@ -32,18 +48,19 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
       let response: string;
       
       const selectedModel = model || (aiType === 'chatgpt' ? 'gpt-4' : 'gemini-1.5-pro');
+      const apiKey = currentApiKey || envApiKey;
       
       if (aiType === 'chatgpt') {
-        response = await runOpenAI(testMessage, selectedModel, maxTokens, temperature);
+        response = await runOpenAI(testMessage, selectedModel, maxTokens, temperature, apiKey);
       } else {
-        response = await runGemini(testMessage, selectedModel, maxTokens, temperature);
+        response = await runGemini(testMessage, selectedModel, maxTokens, temperature, apiKey);
       }
       
       setResult(response);
     } catch (err: any) {
       console.error('AI Test Error:', err);
-      if (err.message?.includes('API key')) {
-        setError(`API Key ${aiType === 'chatgpt' ? 'OpenAI' : 'Gemini'} tidak ditemukan. Silakan set environment variable.`);
+      if (err.message?.includes('API key') || err.message?.includes('401')) {
+        setError(`API Key ${aiType === 'chatgpt' ? 'OpenAI' : 'Gemini'} tidak valid. Periksa kembali API key Anda.`);
       } else if (err.message?.includes('quota') || err.message?.includes('limit')) {
         setError('Quota API habis atau rate limit terlampaui. Coba lagi nanti.');
       } else {
@@ -52,25 +69,25 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [prompt, testMessage, aiType, maxTokens, temperature, model]);
+  }, [prompt, testMessage, aiType, maxTokens, temperature, model, openaiApiKey, geminiApiKey]);
 
   const hasApiKey = useCallback(() => {
     if (aiType === 'chatgpt') {
-      return !!import.meta.env.VITE_OPENAI_API_KEY;
+      return !!(openaiApiKey || import.meta.env.VITE_OPENAI_API_KEY);
     } else {
-      return !!import.meta.env.VITE_GEMINI_API_KEY;
+      return !!(geminiApiKey || import.meta.env.VITE_GEMINI_API_KEY);
     }
-  }, [aiType]);
+  }, [aiType, openaiApiKey, geminiApiKey]);
 
   return (
     <div className="glass-ultra rounded-2xl shadow-lg overflow-hidden">
-      <div className="px-responsive py-4 bg-gradient-to-r from-gray-800/30 to-gray-700/30 border-b border-white/5">
+      <div className="px-4 sm:px-6 py-4 bg-gradient-to-r from-gray-800/30 to-gray-700/30 border-b border-white/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="p-2 glass-card rounded-lg">
               <Zap className="w-5 h-5 text-pink-400" />
             </div>
-            <h3 className="text-responsive-lg font-semibold text-gray-100">Test AI Response</h3>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-100">Test AI Response</h3>
           </div>
           <button
             onClick={() => setShowApiSettings(!showApiSettings)}
@@ -83,82 +100,132 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
       </div>
 
       {showApiSettings && (
-        <div className="px-responsive py-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border-b border-yellow-500/20">
-          <div className="text-responsive-sm text-yellow-200">
-            <p className="font-medium mb-3 flex items-center space-x-2">
-              <Settings className="w-4 h-4" />
-              <span>API Configuration:</span>
-            </p>
-            
-            {/* Token and Temperature Controls */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+        <div className="px-4 sm:px-6 py-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-b border-blue-500/20">
+          <div className="space-y-4">
+            {/* API Keys Section */}
+            <div className="glass-card p-4 rounded-xl border border-blue-500/20">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Key className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm font-medium text-blue-200">API Keys</span>
+                </div>
+                <button
+                  onClick={() => setShowApiKeys(!showApiKeys)}
+                  className="p-1 text-gray-400 hover:text-gray-200 transition-colors duration-200"
+                >
+                  {showApiKeys ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-300 mb-2">
+                    OpenAI API Key
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showApiKeys ? "text" : "password"}
+                      value={openaiApiKey}
+                      onChange={(e) => setOpenaiApiKey(e.target.value)}
+                      placeholder="sk-..."
+                      className="w-full px-3 py-2 pr-10 glass-input rounded-lg text-sm focus-ring"
+                    />
+                    <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-xs font-medium text-gray-300 mb-2">
+                    Gemini API Key
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showApiKeys ? "text" : "password"}
+                      value={geminiApiKey}
+                      onChange={(e) => setGeminiApiKey(e.target.value)}
+                      placeholder="AI..."
+                      className="w-full px-3 py-2 pr-10 glass-input rounded-lg text-sm focus-ring"
+                    />
+                    <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-3 text-xs text-gray-400">
+                <p>💡 API keys disimpan sementara di browser dan tidak dikirim ke server</p>
+              </div>
+            </div>
+
+            {/* Model and Parameters */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-medium mb-2">Max Tokens</label>
+                <label className="block text-xs font-medium text-gray-300 mb-2">Model</label>
+                <select
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                  className="w-full px-3 py-2 glass-input rounded-lg text-sm focus-ring"
+                >
+                  {aiType === 'chatgpt' ? (
+                    <>
+                      <option value="">GPT-4 (Default)</option>
+                      <option value="gpt-4">GPT-4</option>
+                      <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                      <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="">Gemini-1.5-pro (Default)</option>
+                      <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                      <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                    </>
+                  )}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-medium text-gray-300 mb-2">
+                  Max Tokens: {maxTokens}
+                </label>
                 <input
-                  type="number"
+                  type="range"
                   value={maxTokens}
                   onChange={(e) => setMaxTokens(Number(e.target.value))}
                   min="100"
                   max="4000"
-                  className="w-full px-3 py-2 glass-input rounded-lg text-sm focus-ring"
+                  step="100"
+                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
                 />
               </div>
+              
               <div>
-                <label className="block text-xs font-medium mb-2">Temperature</label>
+                <label className="block text-xs font-medium text-gray-300 mb-2">
+                  Temperature: {temperature}
+                </label>
                 <input
-                  type="number"
+                  type="range"
                   value={temperature}
                   onChange={(e) => setTemperature(Number(e.target.value))}
                   min="0"
                   max="2"
                   step="0.1"
-                  className="w-full px-3 py-2 glass-input rounded-lg text-sm focus-ring"
+                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
                 />
               </div>
             </div>
 
-            {/* Model Selection */}
-            <div className="mb-4">
-              <label className="block text-xs font-medium mb-2">Model</label>
-              <select
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-                className="w-full px-3 py-2 glass-input rounded-lg text-sm focus-ring"
-              >
-                {aiType === 'chatgpt' ? (
-                  <>
-                    <option value="">Default (GPT-4)</option>
-                    <option value="gpt-4">GPT-4</option>
-                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                  </>
-                ) : (
-                  <>
-                    <option value="">Default (Gemini-1.5-pro)</option>
-                    <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                    <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-                  </>
-                )}
-              </select>
-            </div>
-
-            <div className="space-y-2 text-xs glass-input p-3 rounded-lg border border-yellow-600/30">
-              <p>• OpenAI: Set <code className="bg-yellow-900/30 px-2 py-1 rounded text-yellow-300 border border-yellow-600/30">VITE_OPENAI_API_KEY</code> in .env</p>
-              <p>• Gemini: Set <code className="bg-yellow-900/30 px-2 py-1 rounded text-yellow-300 border border-yellow-600/30">VITE_GEMINI_API_KEY</code> in .env</p>
-            </div>
-            <div className="mt-3 flex items-center space-x-3">
+            <div className="flex items-center space-x-3 text-xs">
               <div className={`w-3 h-3 rounded-full ${hasApiKey() ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
-              <span className="text-xs font-medium">
-                {hasApiKey() ? `${aiType === 'chatgpt' ? 'OpenAI' : 'Gemini'} API Key: Connected` : `${aiType === 'chatgpt' ? 'OpenAI' : 'Gemini'} API Key: Not Found`}
+              <span className="font-medium text-gray-300">
+                {hasApiKey() ? `${aiType === 'chatgpt' ? 'OpenAI' : 'Gemini'} API: Ready` : `${aiType === 'chatgpt' ? 'OpenAI' : 'Gemini'} API: Not configured`}
               </span>
             </div>
           </div>
         </div>
       )}
 
-      <div className="p-responsive space-y-4">
+      <div className="p-4 sm:p-6 space-y-4">
         <div>
-          <label className="block text-responsive-sm font-medium text-gray-200 mb-3">
+          <label className="block text-sm font-medium text-gray-200 mb-3">
             Test Message
           </label>
           <textarea
@@ -182,12 +249,12 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
           {isLoading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span className="text-responsive-sm">Testing with {aiType === 'chatgpt' ? 'ChatGPT' : 'Gemini'}...</span>
+              <span className="text-sm">Testing with {aiType === 'chatgpt' ? 'ChatGPT' : 'Gemini'}...</span>
             </>
           ) : (
             <>
               <Play className="w-5 h-5" />
-              <span className="text-responsive-sm">Test with {aiType === 'chatgpt' ? 'ChatGPT' : 'Gemini'}</span>
+              <span className="text-sm">Test with {aiType === 'chatgpt' ? 'ChatGPT' : 'Gemini'}</span>
             </>
           )}
         </button>
@@ -195,7 +262,7 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
         {error && (
           <div className="flex items-start space-x-3 p-4 glass-card border border-red-500/30 rounded-xl">
             <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-            <div className="text-responsive-sm text-red-300">
+            <div className="text-sm text-red-300">
               <p className="font-medium text-red-200">Error</p>
               <p className="mt-1 leading-relaxed">{error}</p>
             </div>
@@ -206,12 +273,12 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <CheckCircle className="w-5 h-5 text-green-400" />
-              <span className="text-responsive-sm font-medium text-green-300">
+              <span className="text-sm font-medium text-green-300">
                 Response from {aiType === 'chatgpt' ? 'ChatGPT' : 'Gemini'}
               </span>
             </div>
             <div className="glass-input rounded-xl p-4 max-h-64 overflow-y-auto border border-white/5">
-              <pre className="text-responsive-xs text-gray-200 whitespace-pre-wrap font-mono leading-relaxed">
+              <pre className="text-xs text-gray-200 whitespace-pre-wrap font-mono leading-relaxed">
                 {result}
               </pre>
             </div>

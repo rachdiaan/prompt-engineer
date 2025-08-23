@@ -100,7 +100,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Subtle Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-60">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl animate-subtle-float"></div>
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl animate-subtle-float" style={{ animationDelay: '4s' }}></div>
       </div>
@@ -108,7 +108,7 @@ function App() {
       <Header />
       
       <div className="relative container-responsive py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-responsive">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
           {/* Form Section */}
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -116,7 +116,7 @@ function App() {
                 <div className="p-2 glass-card rounded-lg">
                   <Sparkles className="w-6 h-6 text-purple-400" />
                 </div>
-                <h2 className="text-responsive-xl font-bold text-gradient">
+                <h2 className="text-xl sm:text-2xl font-bold text-gradient">
                   Buat Prompt
                 </h2>
               </div>
@@ -125,7 +125,7 @@ function App() {
                 className="flex items-center space-x-2 px-4 py-3 text-gray-400 hover:text-gray-200 glass-card hover:glass-button rounded-xl transition-all duration-200 interactive focus-ring"
               >
                 <RefreshCw className="w-4 h-4" />
-                <span className="text-responsive-sm font-medium">Reset</span>
+                <span className="text-sm font-medium">Reset</span>
               </button>
             </div>
 
