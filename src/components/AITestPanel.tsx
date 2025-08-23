@@ -176,7 +176,11 @@ export const AITestPanel: React.FC<AITestPanelProps> = ({ prompt, aiType }) => {
                     <>
                       <option value="">Gemini-1.5-pro (Default)</option>
                       <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                      <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro Latest</option>
                       <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                      <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash Latest</option>
+                      <option value="gemini-1.0-pro">Gemini 1.0 Pro</option>
+                      <option value="gemini-pro">Gemini Pro</option>
                     </>
                   )}
                 </select>
